@@ -31,7 +31,7 @@ namespace NotificationTablePopulationLambda.Data
             var connectionString = $"Data Source={dbSecretObject.Host};" +
                 $"Initial Catalog={dbSecretObject.DbName};" +
                 $"User ID={dbSecretObject.UserName};" +
-                $"Password={dbSecretObject.Password};";
+                $"Password={dbSecretObject.Password};" + "TrustServerCertificate=True;Encrypt=False;";
 
             return connectionString;
         }

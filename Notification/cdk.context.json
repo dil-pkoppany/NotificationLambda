@@ -142,5 +142,135 @@
         ]
       }
     ]
+  },
+  "vpc-provider:account=392912010766:filter.vpc-id=vpc-0cca5a6bea9bf258e:region=eu-central-1:returnAsymmetricSubnets=true": {
+    "vpcId": "vpc-0cca5a6bea9bf258e",
+    "vpcCidrBlock": "10.12.0.0/16",
+    "ownerAccountId": "472075812593",
+    "availabilityZones": [],
+    "subnetGroups": [
+      {
+        "name": "Public",
+        "type": "Public",
+        "subnets": [
+          {
+            "subnetId": "subnet-0edede359fa965a85",
+            "cidr": "10.12.160.0/19",
+            "availabilityZone": "eu-central-1a",
+            "routeTableId": "rtb-024e26976d68c603b"
+          },
+          {
+            "subnetId": "subnet-08a699397ca445e74",
+            "cidr": "10.12.192.0/19",
+            "availabilityZone": "eu-central-1b",
+            "routeTableId": "rtb-024e26976d68c603b"
+          },
+          {
+            "subnetId": "subnet-047a53575de8c123f",
+            "cidr": "10.12.224.0/19",
+            "availabilityZone": "eu-central-1c",
+            "routeTableId": "rtb-024e26976d68c603b"
+          }
+        ]
+      },
+      {
+        "name": "Private",
+        "type": "Private",
+        "subnets": [
+          {
+            "subnetId": "subnet-0e3ab647cf41e9317",
+            "cidr": "10.12.0.0/19",
+            "availabilityZone": "eu-central-1a",
+            "routeTableId": "rtb-0148477e602896526"
+          },
+          {
+            "subnetId": "subnet-07865b48945b5f26d",
+            "cidr": "10.12.32.0/19",
+            "availabilityZone": "eu-central-1b",
+            "routeTableId": "rtb-02c2159885016d7ac"
+          },
+          {
+            "subnetId": "subnet-00c7b678898a8f14c",
+            "cidr": "10.12.64.0/19",
+            "availabilityZone": "eu-central-1c",
+            "routeTableId": "rtb-0e826c2c35d1b2d62"
+          }
+        ]
+      }
+    ]
+  },
+  "vpc-provider:account=392912010766:filter.vpc-id=vpc-066f67725f882647c:region=us-west-2:returnAsymmetricSubnets=true": {
+    "vpcId": "vpc-066f67725f882647c",
+    "vpcCidrBlock": "10.1.0.0/16",
+    "ownerAccountId": "392912010766",
+    "availabilityZones": [],
+    "subnetGroups": [
+      {
+        "name": "public",
+        "type": "Public",
+        "subnets": [
+          {
+            "subnetId": "subnet-05ab6aef24511acbe",
+            "cidr": "10.1.0.0/24",
+            "availabilityZone": "us-west-2a",
+            "routeTableId": "rtb-006ada3ea55207c86"
+          },
+          {
+            "subnetId": "subnet-0beee123eaeb6f696",
+            "cidr": "10.1.1.0/24",
+            "availabilityZone": "us-west-2b",
+            "routeTableId": "rtb-0f243c617abd80569"
+          },
+          {
+            "subnetId": "subnet-07251df255928a7cd",
+            "cidr": "10.1.2.0/24",
+            "availabilityZone": "us-west-2c",
+            "routeTableId": "rtb-010816086ccbd2914"
+          }
+        ]
+      },
+      {
+        "name": "Isolated",
+        "type": "Isolated",
+        "subnets": [
+          {
+            "subnetId": "subnet-0cbe0eb03e4b96754",
+            "cidr": "10.1.100.0/24",
+            "availabilityZone": "us-west-2a",
+            "routeTableId": "rtb-09543d640410f3144"
+          },
+          {
+            "subnetId": "subnet-039e2ea3b28c71f52",
+            "cidr": "10.1.101.0/24",
+            "availabilityZone": "us-west-2b",
+            "routeTableId": "rtb-09543d640410f3144"
+          }
+        ]
+      },
+      {
+        "name": "private",
+        "type": "Private",
+        "subnets": [
+          {
+            "subnetId": "subnet-0adf8779a84caef62",
+            "cidr": "10.1.3.0/24",
+            "availabilityZone": "us-west-2a",
+            "routeTableId": "rtb-04c7765416495ca64"
+          },
+          {
+            "subnetId": "subnet-0bc3f90bcf73de369",
+            "cidr": "10.1.4.0/24",
+            "availabilityZone": "us-west-2b",
+            "routeTableId": "rtb-071e54505f0adc8f4"
+          },
+          {
+            "subnetId": "subnet-03f104469a1440a00",
+            "cidr": "10.1.5.0/24",
+            "availabilityZone": "us-west-2c",
+            "routeTableId": "rtb-078a2e295ed66e715"
+          }
+        ]
+      }
+    ]
   }
 }
