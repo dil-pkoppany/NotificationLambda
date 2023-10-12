@@ -7,7 +7,7 @@ import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as secrets from 'aws-cdk-lib/aws-secretsmanager';
 // import { checkovSkip } from '@diligentcorp/checkov-helper';
 import { Construct } from 'constructs';
-import { ProdDbSecretName, TestDbSecretName, VpcId, VpcSubnetIdTest } from '../constants';
+import { AccuvioDEVVpcId, ProdDbSecretName, TestDbSecretName, VpcId, VpcSubnetIdTest } from '../constants';
 import { getBranchName, getLastCommit } from '../utils';
 import { EncryptedSecret, ToolsSecretsKMSKey } from '@diligentcorp/library-cdk-secret';
 import { Key } from 'aws-cdk-lib/aws-kms';
@@ -46,6 +46,7 @@ export class NotificationStack extends cdk.Stack {
     // });
 
     const vpc = ec2.Vpc.fromLookup(this, 'RdsVpc', { vpcId: VpcId });
+    // const vpc = ec2.Vpc.fromLookup(this, 'RdsVpc', { vpcId: AccuvioDEVVpcId });
 
     const notificationLambda = new lambda.Function(this, 'NotificationLambda', {
       runtime: lambda.Runtime.DOTNET_6,
@@ -70,7 +71,8 @@ export class NotificationStack extends cdk.Stack {
       timeout: cdk.Duration.minutes(2),
       vpcSubnets: { subnets: [ec2.Subnet.fromSubnetId(this, 'Subnet', VpcSubnetIdTest)] },
       vpc: vpc,
-      reservedConcurrentExecutions: 1
+      reservedConcurrentExecutions: 1,
+      allowPublicSubnet: true,
     });
 
     const dbResourceArn = secrets.Secret.fromSecretNameV2(this, id, TestDbSecretName).secretArn;

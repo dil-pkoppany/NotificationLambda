@@ -32,7 +32,6 @@ namespace NotificationTablePopulationLambda.Data
                 $"Initial Catalog={dbSecretObject.DbName};" +
                 $"User ID={dbSecretObject.UserName};" +
                 $"Password={dbSecretObject.Password};" + "TrustServerCertificate=True;Encrypt=False;";
-
             return connectionString;
         }
     }
