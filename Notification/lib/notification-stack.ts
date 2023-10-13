@@ -14,7 +14,7 @@ export class NotificationStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const vpc = ec2.Vpc.fromLookup(this, 'RdsVpc', { vpcId: VpcId });
+    const vpc = ec2.Vpc.fromLookup(this, 'Vpc', { vpcId: VpcId });
 
     const notificationLambda = new lambda.Function(this, 'NotificationLambda', {
       runtime: lambda.Runtime.DOTNET_6,
@@ -39,13 +39,14 @@ export class NotificationStack extends cdk.Stack {
       vpc: vpc,
       reservedConcurrentExecutions: 1,
       allowPublicSubnet: true,
+      memorySize: 256
     });
 
     const dbResourceArn = secrets.Secret.fromSecretNameV2(this, id, TestDbSecretName).secretArn;
 
     const secretManagerPolicy = new iam.PolicyStatement();
     secretManagerPolicy.addActions("secretsmanager:DescribeSecret", "secretsmanager:GetSecretValue");
-    secretManagerPolicy.addAllResources();
+    secretManagerPolicy.addResources(dbResourceArn);
 
     notificationLambda.addToRolePolicy(secretManagerPolicy);
 
