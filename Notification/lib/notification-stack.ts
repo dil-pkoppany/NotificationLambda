@@ -87,7 +87,7 @@ export class NotificationStack extends cdk.Stack {
     cdk.Tags.of(notificationLambda).add("git-latest-commit", getLastCommit());
 
     const rule = new events.Rule(this, 'Schedule Rule', {
-      schedule: events.Schedule.rate(cdk.Duration.minutes(35)),
+      schedule: events.Schedule.rate(cdk.Duration.minutes(5)),
       targets: [
         new targets.LambdaFunction(notificationLambda)
       ]
