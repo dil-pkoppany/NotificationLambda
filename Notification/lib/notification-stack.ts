@@ -7,53 +7,19 @@ import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as secrets from 'aws-cdk-lib/aws-secretsmanager';
 // import { checkovSkip } from '@diligentcorp/checkov-helper';
 import { Construct } from 'constructs';
-import { AccuvioDEVVpcId, ProdDbSecretName, TestDbSecretName, VpcId, VpcSubnetIdTest } from '../constants';
+import { TestDbSecretName, VpcId, VpcSubnetIdTest } from '../constants';
 import { getBranchName, getLastCommit } from '../utils';
-import { EncryptedSecret, ToolsSecretsKMSKey } from '@diligentcorp/library-cdk-secret';
-import { Key } from 'aws-cdk-lib/aws-kms';
 
 export class NotificationStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // const vpc = ec2.Vpc.fromLookup(this, 'Vpc', {
-    //   vpcName: VpcName,
-    // });
-    // const name = 'NotificationLamda';
-    // const stageName = 'TEST';
-    // new ToolsSecretsKMSKey(this, `${stageName}-SecretsEncryptionKey`, {
-    //   keyProps: {
-    //     alias: `alias/${name}-${stageName}`,
-    //   },
-    //   workloadAWSAccountId: '392912010766',
-    // });
-
-    // const kmsSecretKey = new Key(this, `AppSecretEncryptionKey`, {
-    //   alias: `alias/${name}-${stageName}`,
-    //   enableKeyRotation: true, // Rotate the key every year - Compliance requirement
-    //   removalPolicy: cdk.RemovalPolicy.DESTROY, // Remove the key when the stack is destroyed, Retain is default
-    //   pendingWindow: cdk.Duration.days(7), // Allow 7 days for key deletion
-    // });
-
-
-    // const mySecret = new EncryptedSecret(this, 'my-secret', {
-    //   secretProps: {
-    //     description: 'A Super Secret Secret for NotificationLambda',
-    //     encryptionKey: kmsSecretKey, // `kmsSecretKey` is a KMS Key from your application stack - Required for Compliance
-    //   },
-    //   cipherText: 'AQICAHhFR8...',
-    //   kmsKeyArn: 'arn:aws:kms:eu-west-1:392912010766:key/a4ec2319-07c2-4fd5-af64-7e8b19fb5366',
-    // });
-
     const vpc = ec2.Vpc.fromLookup(this, 'RdsVpc', { vpcId: VpcId });
-    // const vpc = ec2.Vpc.fromLookup(this, 'RdsVpc', { vpcId: AccuvioDEVVpcId });
 
     const notificationLambda = new lambda.Function(this, 'NotificationLambda', {
       runtime: lambda.Runtime.DOTNET_6,
       handler: 'NotificationTablePopulationLambda::NotificationTablePopulationLambda.Function::FunctionHandler',
-      // handler: 'notification-lambda::notification_lambda.Function::FunctionHandler',
       code: lambda.Code.fromAsset('../Lambdas/ChangeLogLambdas/NotificationTablePopulationLambda/', {
-      // code: lambda.Code.fromAsset('../Lambdas/SampleLambda/src/notification-lambda', {
         bundling: {
           image: lambda.Runtime.DOTNET_6.bundlingImage,
           user: "root",
