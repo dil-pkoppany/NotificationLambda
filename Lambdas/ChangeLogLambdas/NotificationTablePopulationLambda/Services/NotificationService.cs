@@ -77,13 +77,12 @@ public class NotificationService : INotificationService
 
     private void NotifyUsers(Guid newChangeId)
     {
-        int? companyToNotifyId = _changeLogRepository
+        ChangeLog? changeLog = _changeLogRepository
             .GetAll()
             .Where(x => x.ChangeId == newChangeId && x.CompanyId != null)
-            .FirstOrDefault()
-            ?.CompanyId;
+            .FirstOrDefault();
 
-        if (companyToNotifyId == null)
+        if (changeLog == null)
         {
             return;
         }
@@ -91,27 +90,26 @@ public class NotificationService : INotificationService
         // From all users in the company select only those IDs that have specific roles
         IQueryable<Guid> usersToNotifyIds = (from cu in _companiesUsersRepository.GetAll()
                                              join ur in _userRolesRepository.GetAll() on cu.UserId equals ur.UserId
-                                             where cu.CompanyId == companyToNotifyId.Value && RolesToNotifyIds.Contains(ur.RoleId)
+                                             where cu.CompanyId == changeLog.CompanyId.Value && RolesToNotifyIds.Contains(ur.RoleId)
                                              select cu.UserId).Distinct();
 
         // Select users IDs that don't need notification (additional query for code readability)
         IQueryable<Guid> usersThatAlreadyNotifiedIds = from n in _notificationRepository.GetAll()
-                                                       where usersToNotifyIds.Contains(n.UserId) && n.CompanyId == companyToNotifyId.Value
+                                                       where usersToNotifyIds.Contains(n.UserId) && n.CompanyId == changeLog.CompanyId.Value
                                                        select n.UserId;
 
         IEnumerable<Guid> usersThatAreNotNotifiedIds = usersToNotifyIds
             .Except(usersThatAlreadyNotifiedIds);
 
         List<Notification> newNotifications = new();
-        var notificationTime = DateTime.UtcNow;
 
         foreach (var userId in usersThatAreNotNotifiedIds)
         {
             Notification newNotification = new()
             {
-                TimeStamp = notificationTime,
+                TimeStamp = changeLog.Timestamp,
                 UserId = userId,
-                CompanyId = companyToNotifyId.Value
+                CompanyId = changeLog.CompanyId.Value
             };
             newNotifications.Add(newNotification);
         }
