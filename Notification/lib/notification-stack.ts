@@ -47,7 +47,7 @@ export class NotificationStack extends cdk.Stack {
         }
       }),
       environment: { DbSecretObjectKey },
-      timeout: cdk.Duration.minutes(2),
+      timeout: cdk.Duration.minutes(4),
       vpcSubnets,
       vpc: vpc,
       reservedConcurrentExecutions: 1,
