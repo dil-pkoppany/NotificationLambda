@@ -7,7 +7,7 @@ import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as secrets from 'aws-cdk-lib/aws-secretsmanager';
 // import { checkovSkip } from '@diligentcorp/checkov-helper';
 import { Construct } from 'constructs';
-import { TestDbSecretName, VpcId, VpcSubnetIdTest } from '../constants';
+import { TestDbSecretName, VpcId, TestVpcSubnetId } from '../constants';
 import { getBranchName, getLastCommit } from '../utils';
 
 export class NotificationStack extends cdk.Stack {
@@ -35,7 +35,7 @@ export class NotificationStack extends cdk.Stack {
       }),
       environment: { DbSecretObjectKey: TestDbSecretName },
       timeout: cdk.Duration.minutes(2),
-      vpcSubnets: { subnets: [ec2.Subnet.fromSubnetId(this, 'Subnet', VpcSubnetIdTest)] },
+      vpcSubnets: { subnets: [ec2.Subnet.fromSubnetId(this, 'Subnet', TestVpcSubnetId)] },
       vpc: vpc,
       reservedConcurrentExecutions: 1,
       allowPublicSubnet: true,
@@ -46,7 +46,7 @@ export class NotificationStack extends cdk.Stack {
 
     const secretManagerPolicy = new iam.PolicyStatement();
     secretManagerPolicy.addActions("secretsmanager:DescribeSecret", "secretsmanager:GetSecretValue");
-    secretManagerPolicy.addResources(dbResourceArn);
+    secretManagerPolicy.addResources(`${dbResourceArn}-*`);
 
     notificationLambda.addToRolePolicy(secretManagerPolicy);
 
