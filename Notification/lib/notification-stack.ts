@@ -7,14 +7,27 @@ import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as secrets from 'aws-cdk-lib/aws-secretsmanager';
 // import { checkovSkip } from '@diligentcorp/checkov-helper';
 import { Construct } from 'constructs';
-import { TestDbSecretName, VpcId, TestVpcSubnetId } from '../constants';
+import { ProdDbSecretName, VpcId, ProdVpcSubnetId, TestVpcSubnetId, TestDbSecretName } from '../constants';
 import { getBranchName, getLastCommit } from '../utils';
+import { NotificationLambdaProps } from '../config';
 
 export class NotificationStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props?: NotificationLambdaProps) {
     super(scope, id, props);
 
     const vpc = ec2.Vpc.fromLookup(this, 'Vpc', { vpcId: VpcId });
+    const vpcSubnets = props?.isProduction 
+                              ? { subnets: [ec2.Subnet.fromSubnetId(this, 'Subnet', ProdVpcSubnetId)] }
+                              : { subnets: [ec2.Subnet.fromSubnetId(this, 'Subnet', TestVpcSubnetId)] }
+    
+    const dbResourceArn = props?.isProduction 
+                                ? secrets.Secret.fromSecretNameV2(this, id, ProdDbSecretName).secretArn
+                                : secrets.Secret.fromSecretNameV2(this, id, TestDbSecretName).secretArn;
+                                
+    const DbSecretObjectKey = props?.isProduction 
+                                    ? ProdDbSecretName
+                                    : TestDbSecretName;
+
 
     const notificationLambda = new lambda.Function(this, 'NotificationLambda', {
       runtime: lambda.Runtime.DOTNET_6,
@@ -33,16 +46,14 @@ export class NotificationStack extends cdk.Stack {
           ]
         }
       }),
-      environment: { DbSecretObjectKey: TestDbSecretName },
+      environment: { DbSecretObjectKey },
       timeout: cdk.Duration.minutes(2),
-      vpcSubnets: { subnets: [ec2.Subnet.fromSubnetId(this, 'Subnet', TestVpcSubnetId)] },
+      vpcSubnets,
       vpc: vpc,
       reservedConcurrentExecutions: 1,
       allowPublicSubnet: true,
       memorySize: 256
     });
-
-    const dbResourceArn = secrets.Secret.fromSecretNameV2(this, id, TestDbSecretName).secretArn;
 
     const secretManagerPolicy = new iam.PolicyStatement();
     secretManagerPolicy.addActions("secretsmanager:DescribeSecret", "secretsmanager:GetSecretValue");
