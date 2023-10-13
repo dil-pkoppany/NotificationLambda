@@ -109,7 +109,8 @@ public class NotificationService : INotificationService
             {
                 TimeStamp = changeLog.Timestamp,
                 UserId = userId,
-                CompanyId = changeLog.CompanyId.Value
+                CompanyId = changeLog.CompanyId.Value,
+                NotificationMessage = ""
             };
             newNotifications.Add(newNotification);
         }
